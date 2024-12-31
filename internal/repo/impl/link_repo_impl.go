@@ -64,3 +64,9 @@ func (impl *LinkRepoImpl) GetAllLinkByUser(ctx context.Context, userID uuid.UUID
 	impl.DB(ctx).Where("user_id = ?", userID).Find(&links)
 	return links
 }
+
+func (impl *LinkRepoImpl) GetAllLink(ctx context.Context) []*models.Link {
+	var links []*models.Link
+	impl.DB(ctx).Find(&links)
+	return links
+}
