@@ -1,0 +1,21 @@
+# log
+log:
+  writter:   string  # file, console, all - default all
+  fileName: "../logs/app.log"
+  maxSize:   10  
+  maxBackup: 5
+  maxAge:    30
+  compress:  false
+
+# dal
+database:
+  dialact: "sqlite"
+  dsn: "../app.db"
+
+redis:
+  address: "localhost:6379"
+  password: "redis-url-shortener-qwenjklqjw6987#sa"
+  db: 0
+
+sync:
+  interval_seconds: 60

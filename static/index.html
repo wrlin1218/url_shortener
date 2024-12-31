@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>链接创建</title>
+    <!-- 引入Google Fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 容器样式 */
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* 输入框样式 */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #23a6d5;
+            outline: none;
+        }
+
+        /* 按钮样式 */
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #23a6d5;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #1b86b8;
+            transform: translateY(-2px);
+        }
+
+        /* 提示消息 */
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #e74c3c;
+        }
+
+        .success {
+            color: #2ecc71;
+        }
+
+        .error {
+            color: #e74c3c;
+        }
+
+        /* 短链接显示样式 */
+        .short-link {
+            margin-top: 10px;
+            font-size: 16px;
+            word-break: break-all;
+            color: #23a6d5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>创建新短链</h2>
+    <form id="linkForm">
+        <div class="input-group">
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+        </div>
+        <div class="input-group">
+            <label for="url">URL</label>
+            <input type="url" id="url" name="url" placeholder="请输入有效的URL" required>
+        </div>
+        <button type="submit" class="submit-btn">提交</button>
+        <div class="message" id="message"></div>
+        <div class="short-link" id="shortLink"></div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('linkForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // 防止表单默认提交
+
+        const username = document.getElementById('username').value.trim();
+        const original_url = document.getElementById('url').value.trim();
+        const messageDiv = document.getElementById('message');
+        const shortLinkDiv = document.getElementById('shortLink');
+
+        // 清空之前的消息
+        messageDiv.textContent = '';
+        messageDiv.classList.remove('success', 'error');
+        shortLinkDiv.textContent = '';
+
+        // 简单验证
+        if (!username || !original_url) {
+            messageDiv.textContent = '请填写所有字段。';
+            messageDiv.classList.add('error');
+            return;
+        }
+
+        // 构建请求体
+        const requestBody = {
+            username: username,
+            original_url: original_url
+        };
+
+        try {
+            const response = await fetch('/link/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            const responseData = await response.json();
+
+            if (response.ok) {
+                // 显示成功消息和生成的短链接码
+                messageDiv.textContent = responseData.message || '链接创建成功！';
+                messageDiv.classList.add('success');
+
+                if (responseData.code) {
+                    // 假设短链接为当前域名 + 短链接码
+                    const shortUrl = `${window.location.origin}/${responseData.code}`;
+                    shortLinkDiv.innerHTML = `短链接: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+                }
+
+                // 清空表单
+                document.getElementById('linkForm').reset();
+            } else {
+                // 显示错误消息
+                messageDiv.textContent = responseData.error || responseData.message || '创建失败，请重试。';
+                messageDiv.classList.add('error');
+            }
+        } catch (error) {
+            messageDiv.textContent = '网络错误，请稍后再试。';
+            messageDiv.classList.add('error');
+            console.error('Error:', error);
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=redis-url-shortener-qwenjklqjw6987#sa
+    command: [ "redis-server", "--requirepass", "redis-url-shortener-qwenjklqjw6987#sa" ]
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
