@@ -13,8 +13,8 @@ type UserController struct {
 
 // 创建用户
 func (uc *UserController) CreateUser(c *gin.Context) {
-	username := c.Param("username")
-	password := c.Param("password")
+	username := c.Query("username")
+	password := c.Query("password")
 
 	if uc.UserService.CheckUserExists(c, username) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists"})
@@ -32,7 +32,7 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 
 // 获取用户的所有短链接
 func (uc *UserController) GetAllLinksByUserName(c *gin.Context) {
-	username := c.Param("username")
+	username := c.Query("username")
 
 	links, err := uc.UserService.GetAllLinksByUserName(c, username)
 	if err != nil {

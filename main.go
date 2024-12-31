@@ -38,7 +38,7 @@ func main() {
 
 	// 设置路由
 	// 静态页面
-	r.GET("/create", func(c *gin.Context) {
+	r.GET("/", func(c *gin.Context) {
 		c.File("./static/index.html") // 根据你的文件结构调整路径
 	})
 	// 后端请求

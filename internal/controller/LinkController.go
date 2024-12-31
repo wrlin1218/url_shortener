@@ -47,8 +47,8 @@ func (lc *LinkController) RedirectToOriginal(c *gin.Context) {
 }
 
 func (lc *LinkController) DeleteShortLink(c *gin.Context) {
-	username := c.Param("username")
-	shortCode := c.Param("short_code")
+	username := c.Query("username")
+	shortCode := c.Query("short_code")
 	err := lc.LinkService.DeleteShortLink(c, username, shortCode)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Delete short link failed, reason: " + err.Error()})
