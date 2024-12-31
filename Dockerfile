@@ -32,7 +32,7 @@ WORKDIR /root/
 COPY --from=builder /app/url_shortener .
 
 # 暴露应用运行的端口
-EXPOSE 8080
+EXPOSE 8081
 
 # 健康检查（可选）
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
