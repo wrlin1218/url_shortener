@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// 加载配置
-	cfg, err := config.LoadConfig("../config", "config.yaml")
+	cfg, err := config.LoadConfig("./config", "config.yaml")
 	if err != nil {
 		log.Fatalf("failed to load configuration: %v", err)
 	}
@@ -39,7 +39,7 @@ func main() {
 	// 设置路由
 	// 静态页面
 	r.GET("/create", func(c *gin.Context) {
-		c.File("../static/index.html") // 根据你的文件结构调整路径
+		c.File("./static/index.html") // 根据你的文件结构调整路径
 	})
 	// 后端请求
 	r.GET("/user/create", userController.CreateUser)

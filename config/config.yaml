@@ -10,7 +10,7 @@ log:
 # dal
 database:
   dialact: "sqlite"
-  dsn: "../app.db"
+  dsn: "./config/app.db"
 
 redis:
   address: "localhost:6379"
